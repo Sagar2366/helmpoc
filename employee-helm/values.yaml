@@ -1,0 +1,7 @@
+frontendimage: nameduttu/employee-db
+frontendport: 8890
+global:
+  replicacount: 1
+  type: NodePort
+service:
+  port: 80

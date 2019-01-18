@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pet-app
+  labels:
+    run: pet-app
+spec:
+  ports:
+  - port: 1023
+    targetPort: 1023
+    protocol: TCP
+  type: NodePort
+  selector:
+    run: pet-app
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pet-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: pet-app
+    spec:
+      containers:
+      - name: pet-app
+        image:  nameduttu/pet
+        ports:
+        - containerPort: 1023 

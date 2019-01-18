@@ -1,0 +1,7 @@
+rabbitname: rabbitmq
+rabbitport1: 5672
+rabbitport2: 15672
+replicacount: 1
+springname: spring-app
+springimage: nameduttu/spring:8
+springport: 8080

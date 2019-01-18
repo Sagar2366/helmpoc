@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.rabbitname }}
+  namespace: default
+spec:
+  selector:
+    serviceType: message-broker
+  ports:
+    - port: {{ .Values.rabbitport1 }}
+      name: broker
+      targetPort: {{ .Values.rabbitport1 }}
+    - port: 15672
+      name: admin
+      targetPort: {{ .Values.rabbitport2 }}
+  type: NodePort
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.rabbitname }}
+spec:
+  replicas: {{ .Values.replicacount }}
+  template:
+    metadata:
+      name: {{ .Values.rabbitname }}
+      labels:
+        app: infrastructure
+        serviceType: message-broker
+    spec:
+      containers:
+        - name: {{ .Values.rabbitname }}
+          image: rabbitmq:management
+          ports:
+          - containerPort: {{ .Values.rabbitport1 }}
+          - containerPort: {{ .Values.rabbitport2 }}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.springname }}
+  labels:
+    run: {{ .Values.springname }}
+spec:
+  ports:
+  - port: {{ .Values.springport }}
+    targetPort: {{ .Values.springport }}
+    protocol: TCP
+  type: NodePort
+  selector:
+    run: {{ .Values.springname }}
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.springname }}
+spec:
+  replicas: {{ .Values.replicacount }}
+  template:
+    metadata:
+      labels:
+        run: {{ .Values.springname }}
+    spec:
+      containers:
+      - name: {{ .Values.springname }}
+        image:  {{ .Values.springimage}}
+        ports:
+        - containerPort: {{ .Values.springport }}
